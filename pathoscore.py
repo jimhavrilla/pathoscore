@@ -254,6 +254,11 @@ def plot(score_methods, scored, unscored, scorable, prefix, title=None, suffix="
     jdist_traces = []
     jindices = {}
     output = OrderedDict((k, []) for k in ('method', 'J', 'score@J', 'se(J)', 'TPR@J', 'FPR@J', 'AUC', 'TP@J', 'FP@J', 'TN@J', 'FN@J'))
+    of = open('out.txt', 'w')
+    from rpy2.robjects.packages import importr
+    import rpy2.robjects as robjects        
+    utils = importr('utils')
+    pROC = importr('pROC')
     for i, f in enumerate(score_methods):
         if len(scored[f][0]) == 0:
             print("skipping %s because no negatives" % f, file=sys.stderr)
@@ -265,6 +270,9 @@ def plot(score_methods, scored, unscored, scorable, prefix, title=None, suffix="
 
         scores = scored[f][0] + scored[f][1]
         truth = ([0] * len(scored[f][0])) + ([1] * len(scored[f][1]))
+        rocobj = pROC.roc(robjects.FloatVector(truth), robjects.FloatVector(scores))
+        aucobj = pROC.ci_auc(rocobj)
+        print (aucobj, f, file=of)
         fpr, tpr, thresh = roc_curve(truth, scores, pos_label=1, drop_intermediate=True)
         precision, recall, thresholds = precision_recall_curve(truth, scores, pos_label=1)
         auc_score = auc(fpr, tpr)
