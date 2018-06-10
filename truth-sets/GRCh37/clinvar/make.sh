@@ -1,4 +1,4 @@
-date=20170905
+date=20170802
 set -euo pipefail
 if [[ ! -e clinvar_${date}.vcf.gz ]]; then
     wget ftp://ftp.ncbi.nih.gov/pub/clinvar/vcf_GRCh37/archive_2.0/2017/clinvar_${date}.vcf.gz

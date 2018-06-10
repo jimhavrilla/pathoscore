@@ -35,9 +35,6 @@ for v in vcf:
     # we filter this out as well, because it indicates a potential false positive variant
     if v.INFO.get('SSR', ''): continue
     info = v.INFO
-    for k, _ in info:
-        if k == 'CLNSIG': continue
-        del info[k]
 
     # make a key that matches the fhs keys
     key = "-".join(sorted(set(re.split("/|,", clnsig.lower()))))
